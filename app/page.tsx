@@ -6,7 +6,6 @@ import { Menu, X, Home, Star, DollarSign, User, HelpCircle, Mail, LogOut, Moon, 
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image';
 
-const myFunction = (input: any) => {
     
 
 const threatData = [
@@ -474,5 +473,5 @@ export default function Component() {
       </div>
     </div>
   )
-  };
+  
 }
