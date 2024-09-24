@@ -48,11 +48,17 @@ const ShootingStarBackground = () => (
     <div className="shooting-star"></div>
   </div>
 )
+
+const darkMode = true; // remove this line if you are not using darkMode
+
 interface CustomTooltipProps {
   active?: boolean;
    payload?: Record<string, unknown>[];
   darkMode: boolean;
 }
+// Example: Remove if unused
+
+
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, darkMode }) => {
   if (active && payload && payload.length) {
