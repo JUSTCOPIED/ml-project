@@ -48,11 +48,19 @@ const ShootingStarBackground = () => (
     <div className="shooting-star"></div>
   </div>
 )
+
+interface TooltipPayload {
+  name: string;
+  value: number;
+  // Add any other properties that are relevant
+}
+
 interface CustomTooltipProps {
   active?: boolean;
-  payload?: any[];
+  payload?: TooltipPayload[]; // Replace 'any[]' with 'TooltipPayload[]'
   darkMode: boolean;
 }
+
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, darkMode }) => {
   if (active && payload && payload.length) {
