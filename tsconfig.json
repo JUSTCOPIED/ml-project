@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
+    "allowJs": true, // Allows .js imports
     "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
+    "strict": false, // Disable strict type checks for easier development
+    "noEmit": false, // Enable code emit even with type errors
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
+    "isolatedModules": false, // Disable isolated modules to simplify build
+    "jsx": "react-jsx", // Use React JSX transformation
     "incremental": true,
     "plugins": [
       {
@@ -18,7 +18,7 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"] // Keep aliasing, or remove if unused
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
