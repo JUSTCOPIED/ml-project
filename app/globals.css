@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+
+.dark {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+@layer utilities {
+  .text-glow-hover {
+    transition: text-shadow 0.2s ease-in-out;
+  }
+
+  .group:hover .text-glow-hover {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+  }
+
+  .shooting-star {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(-45deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    border-radius: 999px;
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.7));
+    animation: tail 3000ms ease-in-out infinite, shooting 3000ms ease-in-out infinite;
+  }
+
+  .shooting-star::before, .shooting-star::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 1px);
+    right: 0;
+    height: 1px;
+    background: linear-gradient(-45deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    transform: translateX(50%) rotateZ(45deg);
+    border-radius: 100%;
+    animation: shining 3000ms ease-in-out infinite;
+  }
+
+  .shooting-star::after {
+    transform: translateX(50%) rotateZ(-45deg);
+  }
+
+  .shooting-star:nth-child(1) {
+    top: 0;
+    left: 0;
+    animation-delay: 0ms;
+  }
+
+  .shooting-star:nth-child(2) {
+    top: 0;
+    left: 20%;
+    animation-delay: 1000ms;
+  }
+
+  .shooting-star:nth-child(3) {
+    top: 0;
+    left: 40%;
+    animation-delay: 2000ms;
+  }
+
+  .shooting-star:nth-child(4) {
+    top: 0;
+    left: 60%;
+    animation-delay: 3000ms;
+  }
+
+  .shooting-star:nth-child(5) {
+    top: 0;
+    left: 80%;
+    animation-delay: 4000ms;
+  }
+
+  @keyframes tail {
+    0% { width: 0; }
+    30% { width: 200px; }
+    100% { width: 0; }
+  }
+
+  @keyframes shining {
+    0% { width: 0; }
+    50% { width: 15px; }
+    100% { width: 0; }
+  }
+
+  @keyframes shooting {
+    0% {
+      transform: translateX(0) translateY(0) rotate(45deg);
+    }
+    100% {
+      transform: translateX(300px) translateY(300px) rotate(45deg);
+    }
+  }
+
+  .dark {
+    background-color: #000000;
+    color: #FFFFFF;
+  }
+
+  .custom-tooltip {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 4px;
+    padding: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .custom-tooltip.dark {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #FFFFFF;
+  }
+
+  .custom-tooltip .label {
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  .custom-tooltip .intro {
+    font-size: 0.9em;
+  }
+
+  .hover\:glow:hover {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+
+  .dark .hover\:glow:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+}
+
