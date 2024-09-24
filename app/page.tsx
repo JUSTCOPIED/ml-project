@@ -374,11 +374,7 @@ export default function Component() {
             className="fixed inset-y-0 left-0 z-50 w-64 bg-white/30 dark:bg-black/30 backdrop-blur-md shadow-lg lg:relative lg:translate-x-0 flex flex-col"
           >
             <div className="flex flex-col items-center justify-center p-6 border-b border-black/10 dark:border-white/10">
-              <img
-                src="/placeholder.svg?height=64&width=64"
-                alt="User"
-                className="h-16 w-16 rounded-full border-2 border-black/10 dark:border-white/10 mb-2"
-              />
+             //place image here 
               <h2 className="text-xl font-bold text-black dark:text-white">John Doe</h2>
             </div>
             <nav className="flex-grow mt-6 px-4">
