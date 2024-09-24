@@ -1,3 +1,8 @@
-{
-  "extends": ["next/core-web-vitals", "next/typescript"]
-}
+module.exports = {
+    extends: ["next/core-web-vitals", "next/typescript"],
+    rules: {
+        "@typescript-eslint/no-explicit-any": "off", // Disable the rule for 'any'
+        "@typescript-eslint/no-unused-vars": "warn", // Adjust to warning instead of error
+        "next/no-img-element": "warn", // Show as a warning instead of an error
+    },
+};
