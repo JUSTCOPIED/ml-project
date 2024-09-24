@@ -50,7 +50,7 @@ const ShootingStarBackground = () => (
 )
 interface CustomTooltipProps {
   active?: boolean;
-  payload?: any[];
+   payload?: Record<string, unknown>[];
   darkMode: boolean;
 }
 
