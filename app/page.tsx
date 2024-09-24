@@ -48,17 +48,11 @@ const ShootingStarBackground = () => (
     <div className="shooting-star"></div>
   </div>
 )
-
-const darkMode = true; // remove this line if you are not using darkMode
-
 interface CustomTooltipProps {
   active?: boolean;
-   payload?: Record<string, unknown>[];
+  payload?: any[];
   darkMode: boolean;
 }
-// Example: Remove if unused
-
-
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, darkMode }) => {
   if (active && payload && payload.length) {
@@ -170,39 +164,38 @@ const AIInsightsAssistant: React.FC<AIInsightsAssistantProps> = ({ darkMode }) =
     }, 1000)
   }
   return (
-    <div className="h-[calc(100vh-200px)] flex flex-col">
-      <GlassCard className="flex-grow flex flex-col overflow-hidden">
-        <div className="flex-grow overflow-y-auto mb-4 pr-2">
-          {messages.map((message, index) => (
-            <div key={index} className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-              <div className={`inline-block p-2 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-black dark:text-white'}`}>
-                {message.content.split('\n').map((line, i) => (
-                  <p key={i}>{line}</p>
-                ))}
-              </div>
+    <GlassCard className="h-[calc(100vh-240px)] flex flex-col">
+      <div className="flex-grow overflow-y-auto mb-4 pr-2">
+        {messages.map((message, index) => (
+          <div key={index} className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
+            <div className={`inline-block p-2 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-black dark:text-white'}`}>
+              {message.content.split('\n').map((line, i) => (
+                <p key={i}>{line}</p>
+              ))}
             </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-        <div className="flex mt-4">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Ask me about your security data..."
-            className="flex-1 p-2 rounded-l-lg bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            onClick={handleSend}
-            className="p-2 rounded-r-lg bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <Send className="h-5 w-5" />
-          </button>
-        </div>
-      </GlassCard>
-    </div>
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+      <div className="flex mt-4">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+          placeholder="Ask me about your security data..."
+          className="flex-1 p-2 rounded-l-lg bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          onClick={handleSend}
+          className="p-2 rounded-r-lg bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <Send className="h-5 w-5" />
+        </button>
+      </div>
+    </GlassCard>
   )
+
 }
 interface PageContentProps {
   activePage: string;
@@ -260,7 +253,13 @@ const PageContent: React.FC<PageContentProps> = ({ activePage, darkMode }) => {
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     >
                       {typeData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={darkMode ? ['#FFFFFF', '#CCCCCC', '#999999'][index] : ['#333333', '#666666', '#999999'][index]} />
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={darkMode ? 
+                            ['#FFFFFF', '#CCCCCC', '#999999'][index] : 
+                            ['#333333', '#666666', '#999999'][index]
+                          }
+                        />
                       ))}
                     </Pie>
                     <Tooltip content={<CustomTooltip darkMode={darkMode} />} />
@@ -373,14 +372,18 @@ export default function Component() {
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
-            initial={{ x: -300 }}
-            animate={{ x: 0 }}
-            exit={{ x: -300 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            initial={{ x: -300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -300, opacity: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30, duration: 0.3 }}
             className="fixed inset-y-0 left-0 z-50 w-64 bg-white/30 dark:bg-black/30 backdrop-blur-md shadow-lg lg:relative lg:translate-x-0 flex flex-col"
           >
             <div className="flex flex-col items-center justify-center p-6 border-b border-black/10 dark:border-white/10">
-             //place image here 
+              <img
+                src="https://i.redd.it/4r1jdf86app91.jpg"
+                alt="User"
+                className="h-16 w-16 rounded-full border-2 border-black/10 dark:border-white/10 mb-2"
+              />
               <h2 className="text-xl font-bold text-black dark:text-white">John Doe</h2>
             </div>
             <nav className="flex-grow mt-6 px-4">
