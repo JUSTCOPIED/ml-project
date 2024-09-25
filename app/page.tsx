@@ -65,11 +65,11 @@ interface CustomTooltipProps {
 
 const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload, darkMode }) => {
   if (active && payload && payload.length) {
-    const data = payload[0].payload
+    const data = payload[0];
     return (
       <div className={`custom-tooltip ${darkMode ? 'dark' : ''}`}>
         <p className="label">{`${data.name} ${data.value}%`}</p>
-        <p className="intro">{`No. of ${data.name} Threats: ${data.threats}`}</p>
+        <p className="intro">{`No. of ${data.name} Threats: ${data.value}`}</p>
       </div>
     )
   }
@@ -389,7 +389,7 @@ export default function Component() {
           >
             <div className="flex flex-col items-center justify-center p-6 border-b border-black/10 dark:border-white/10">
               <Image
-                src="https://i.redd.it/4r1jdf86app91.jpg"
+                src="/img/cat.webp"
                 alt="User"
                 width={64} // Corresponds to h-16 (16 * 4px = 64px)
                 height={64} // Corresponds to w-16 (16 * 4px = 64px)

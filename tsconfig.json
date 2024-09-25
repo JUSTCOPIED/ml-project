@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true, // Allows .js imports
     "skipLibCheck": true,
     "strict": false, // Disable strict type checks for easier development
@@ -9,8 +13,8 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "isolatedModules": false, // Disable isolated modules to simplify build
-    "jsx": "react-jsx", // Use React JSX transformation
+    "isolatedModules": true, // Disable isolated modules to simplify build
+    "jsx": "preserve", // Use React JSX transformation
     "incremental": true,
     "plugins": [
       {
@@ -18,9 +22,18 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"] // Keep aliasing, or remove if unused
+      "@/*": [
+        "./*"
+      ] // Keep aliasing, or remove if unused
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
