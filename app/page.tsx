@@ -48,9 +48,19 @@ const ShootingStarBackground = () => (
     <div className="shooting-star"></div>
   </div>
 )
+interface PayloadItem {
+  name: string;
+  value: number;
+  payload: {
+    name: string;
+    value: number;
+    threats: number;
+  };
+}
+
 interface CustomTooltipProps {
   active?: boolean;
-  payload?: any[];
+  payload?: PayloadItem[];
   darkMode: boolean;
 }
 
@@ -87,11 +97,10 @@ const Navbar: React.FC<NavbarProps> = ({ activePage, setActivePage }) => {
           <li key={item.name} className="flex-1">
             <button
               onClick={() => setActivePage(item.name)}
-              className={`w-full flex items-center justify-center p-2 rounded-md transition-all duration-300 ${
-                activePage === item.name
-                  ? 'bg-white/20 dark:bg-black/20 text-black dark:text-white scale-105'
-                  : 'text-black/60 dark:text-white/60 hover:bg-white/10 dark:hover:bg-black/10 hover:text-black dark:hover:text-white'
-              }`}
+              className={`w-full flex items-center justify-center p-2 rounded-md transition-all duration-300 ${activePage === item.name
+                ? 'bg-white/20 dark:bg-black/20 text-black dark:text-white scale-105'
+                : 'text-black/60 dark:text-white/60 hover:bg-white/10 dark:hover:bg-black/10 hover:text-black dark:hover:text-white'
+                }`}
             >
               <item.icon className="h-5 w-5 mr-2" />
               <span className="hidden sm:inline">{item.name}</span>
@@ -123,11 +132,13 @@ interface AIInsightsAssistantProps {
   darkMode: boolean;
 }
 
-const AIInsightsAssistant: React.FC<AIInsightsAssistantProps> = ({ darkMode }) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const AIInsightsAssistant: React.FC<AIInsightsAssistantProps> = ({ darkMode: _darkMode }) => {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: "Hello! I'm your AI Insights Assistant. How can I help you with your security data today?" }
+    { role: 'assistant', content: "Hello! I'm your AI Cybersecurity Insights Assistant powered by Groq. I can help you analyze threats, understand attack patterns, predict security risks, and provide actionable recommendations. How can I assist you today?" }
   ])
   const [input, setInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -138,58 +149,88 @@ const AIInsightsAssistant: React.FC<AIInsightsAssistantProps> = ({ darkMode }) =
     scrollToBottom()
   }, [messages])
 
-  const handleSend = () => {
-    if (input.trim() === '') return
+  const handleSend = async () => {
+    if (input.trim() === '' || isLoading) return
 
-    setMessages([...messages, { role: 'user', content: input }])
+    const userMessage = input.trim()
+    const newMessages: Message[] = [...messages, { role: 'user', content: userMessage }]
+    setMessages(newMessages)
     setInput('')
+    setIsLoading(true)
 
-    // Simulate AI response (replace with actual AI integration)
-    setTimeout(() => {
-      let aiResponse = "I'm analyzing your request. Here's what I found:"
-      
-      if (input.toLowerCase().includes('top 3 threats')) {
-        aiResponse += "\n\n1. Malware (60% of threats)\n2. Phishing (25% of threats)\n3. Other (15% of threats)"
-      } else if (input.toLowerCase().includes('predict')) {
-        aiResponse += "\n\nBased on historical data, you may see a 20% increase in malware attacks next week. I recommend increasing your malware detection capabilities."
-      } else if (input.toLowerCase().includes('report')) {
-        aiResponse += "\n\nI've generated a weekly report for you. Here are the key points:\n- Total threats: 35\n- Top threat: Malware (60%)\n- Highest threat day: Saturday (9 threats)"
-      } else if (input.toLowerCase().includes('real-time') || input.toLowerCase().includes('current status')) {
-        aiResponse += "\n\nYour current system threat status is LOW. No immediate threats detected in the last hour."
-      } else {
-        aiResponse += "\n\nI'm sorry, I couldn't find specific information related to your query. Could you please rephrase or ask about top threats, predictions, reports, or real-time status?"
+    try {
+      // Call the Groq API through our backend
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: newMessages.slice(1) // Exclude the initial greeting
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || 'Failed to get response')
       }
 
-      setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }])
-    }, 1000)
+      const data = await response.json()
+      setMessages(prev => [...prev, { role: 'assistant', content: data.message }])
+    } catch (error) {
+      console.error('Chat error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'An error occurred'
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: `I apologize, but I encountered an error: ${errorMessage}. Please check your API configuration and try again.`
+      }])
+    } finally {
+      setIsLoading(false)
+    }
   }
   return (
-    <div className="h-[calc(100vh-200px)] flex flex-col">
-      <GlassCard className="flex-grow flex flex-col overflow-hidden">
-        <div className="flex-grow overflow-y-auto mb-4 pr-2">
+    <div className="h-[calc(100vh-280px)] flex flex-col">
+      <GlassCard className="flex-1 flex flex-col overflow-hidden min-h-0">
+        <div className="flex-1 overflow-y-auto mb-4 pr-2 scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600">
           {messages.map((message, index) => (
             <div key={index} className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-              <div className={`inline-block p-2 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-black dark:text-white'}`}>
+              <div className={`inline-block p-3 rounded-lg max-w-[85%] ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-black dark:text-white'}`}>
                 {message.content.split('\n').map((line, i) => (
-                  <p key={i}>{line}</p>
+                  <p key={i} className="whitespace-pre-wrap break-words">{line}</p>
                 ))}
               </div>
             </div>
           ))}
+          {isLoading && (
+            <div className="mb-4 text-left">
+              <div className="inline-block p-3 rounded-lg bg-gray-200 dark:bg-gray-700 text-black dark:text-white">
+                <div className="flex items-center space-x-2">
+                  <div className="animate-pulse flex space-x-1">
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  </div>
+                  <span className="text-sm text-gray-500">AI is thinking...</span>
+                </div>
+              </div>
+            </div>
+          )}
           <div ref={messagesEndRef} />
         </div>
-        <div className="flex mt-4">
+        <div className="flex-shrink-0 flex gap-2 pt-4 border-t border-gray-200 dark:border-gray-700">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Ask me about your security data..."
-            className="flex-1 p-2 rounded-l-lg bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder={isLoading ? "Please wait..." : "Ask me about your security data..."}
+            disabled={isLoading}
+            className="flex-1 p-3 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <button
             onClick={handleSend}
-            className="p-2 rounded-r-lg bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            disabled={isLoading || input.trim() === ''}
+            className="px-4 py-3 rounded-lg bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <Send className="h-5 w-5" />
           </button>
@@ -303,11 +344,10 @@ const PageContent: React.FC<PageContentProps> = ({ activePage, darkMode }) => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-black dark:text-white">{threat.source}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-black dark:text-white">{threat.type}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          threat.severity === 'low' ? 'bg-green-500 text-white' :
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${threat.severity === 'low' ? 'bg-green-500 text-white' :
                           threat.severity === 'medium' ? 'bg-yellow-500 text-black' :
-                          'bg-red-500 text-white'
-                        }`}>
+                            'bg-red-500 text-white'
+                          }`}>
                           {threat.severity}
                         </span>
                       </td>
@@ -409,8 +449,8 @@ export default function Component() {
                 <span className="text-glow-hover">Log Out</span>
               </a>
             </div>
-            <button 
-              onClick={toggleSidebar} 
+            <button
+              onClick={toggleSidebar}
               className="lg:hidden absolute top-4 right-4 text-black dark:text-white hover:text-black/60 dark:hover:text-white/60 transition-colors duration-200"
             >
               <X className="h-6 w-6" />
@@ -427,8 +467,8 @@ export default function Component() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center">
-                <button 
-                  onClick={toggleSidebar} 
+                <button
+                  onClick={toggleSidebar}
                   className="text-black dark:text-white hover:text-black/60 dark:hover:text-white/60 transition-colors duration-200"
                   aria-label="Toggle sidebar"
                 >
